@@ -1,4 +1,4 @@
-# Bhasini (VaaniSetu) — "Every Language, One Voice"
+# Bhasini — "Every Language, One Voice"
 
 Bhasini is a modern, full-stack AI Translation Platform designed with a glassmorphism SaaS UI. It supports instant translations powered by Google Cloud Translation and LibreTranslate APIs, featuring auto-language detection, browser voice recognition, speech synthesis, local history logs, detailed metrics analytics, a shortcut-driven command palette, and PDF exports.
 
