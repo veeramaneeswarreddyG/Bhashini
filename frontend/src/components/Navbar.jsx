@@ -24,6 +24,11 @@ const Navbar = ({
                 <span className="text-xl font-bold font-sans tracking-tight bg-gradient-to-r from-slate-900 to-indigo-900 dark:from-white dark:to-indigo-200 bg-clip-text text-transparent">
                   bhashini
                 </span>
+                {/* Mobile status indicator */}
+                <span 
+                  title={backendHealthy ? "Engine Connected" : "Backend Offline"}
+                  className={`md:hidden w-2 h-2 rounded-full ${backendHealthy ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}
+                ></span>
               </div>
               <span className="hidden sm:block text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase">
                 Every Language, One Voice
@@ -32,7 +37,7 @@ const Navbar = ({
           </div>
 
           {/* Action Items */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {/* Status indicator */}
             <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 mr-2 text-slate-500 dark:text-slate-400">
               {backendHealthy ? (
@@ -52,7 +57,7 @@ const Navbar = ({
             <button
               onClick={onOpenPalette}
               title="Open Command Palette (Ctrl+K)"
-              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all"
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
             >
               <Terminal className="w-5 h-5" />
             </button>
@@ -61,7 +66,7 @@ const Navbar = ({
             <button
               onClick={onToggleAnalytics}
               title="Toggle Analytics Panel"
-              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all"
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
             >
               <BarChart3 className="w-5 h-5" />
             </button>
@@ -70,7 +75,7 @@ const Navbar = ({
             <button
               onClick={onToggleHistory}
               title="Toggle History Sidebar"
-              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all"
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
             >
               <History className="w-5 h-5" />
             </button>
@@ -79,7 +84,7 @@ const Navbar = ({
             <button
               onClick={toggleTheme}
               title="Toggle Light/Dark Theme"
-              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all"
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800/50 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
             >
               {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-indigo-600" />}
             </button>

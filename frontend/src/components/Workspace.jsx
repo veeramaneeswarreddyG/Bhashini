@@ -208,6 +208,16 @@ const Workspace = ({
       });
 
       showToast('Translation completed', 'success');
+
+      // Smooth scroll to output panel on mobile
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          const outputEl = document.getElementById('output-panel');
+          if (outputEl) {
+            outputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }, 150);
+      }
     } catch (err) {
       setError(err.message || 'Translation failed');
       showToast(err.message || 'Translation failed', 'error');
@@ -376,7 +386,7 @@ const Workspace = ({
             onClick={handleSwapLanguages}
             title="Swap Languages"
             disabled={sourceLang === 'auto'}
-            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-950 disabled:opacity-40 disabled:cursor-not-allowed text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
+            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-950 disabled:opacity-40 disabled:cursor-not-allowed text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer rotate-90 sm:rotate-0"
           >
             <ArrowLeftRight className="w-4 h-4" />
           </button>
@@ -399,6 +409,28 @@ const Workspace = ({
           
           {/* Input Panel */}
           <div className="flex flex-col p-6 relative">
+            {isListening && (
+              <div className="absolute inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-10 animate-fade-in">
+                {/* Bouncing Bars sound wave */}
+                <div className="flex items-end gap-1.5 h-12 mb-4">
+                  <span className="sound-wave-bar w-1.5 h-10 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-6 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-12 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.0s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-8 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-11 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-7 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                  <span className="sound-wave-bar w-1.5 h-10 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+                </div>
+                <p className="text-sm font-semibold text-red-500 mb-1">Listening to your voice...</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Speak clearly, Bhashini is converting your speech. Click Stop to finish.</p>
+                <button
+                  onClick={handleToggleVoice}
+                  className="mt-4 px-4 py-2 rounded-xl text-xs bg-red-500 hover:bg-red-600 text-white font-semibold shadow-md active:scale-95 transition-all cursor-pointer"
+                >
+                  Stop Listening
+                </button>
+              </div>
+            )}
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -454,7 +486,7 @@ const Workspace = ({
           </div>
 
           {/* Output / Result Panel */}
-          <div className="flex flex-col p-6 bg-slate-50/30 dark:bg-slate-950/10">
+          <div id="output-panel" className="flex flex-col p-6 bg-slate-50/30 dark:bg-slate-950/10 scroll-mt-24">
             {loading ? (
               /* Skeleton Loader Screen */
               <div className="flex-1 flex flex-col justify-between animate-pulse">
@@ -571,6 +603,24 @@ const Workspace = ({
               </>
             )}
           </button>
+        </div>
+
+        {/* Keyboard Shortcuts Hint Bar */}
+        <div className="border-t border-slate-200/50 dark:border-slate-800/50 px-6 py-3 bg-slate-100/30 dark:bg-slate-950/40 flex flex-wrap items-center justify-between gap-3 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">Enter</kbd> Translate
+            </span>
+            <span className="flex items-center gap-1.5">
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">Shift</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">S</kbd> Voice Input
+            </span>
+            <span className="flex items-center gap-1.5">
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">K</kbd> Actions
+            </span>
+          </div>
+          <span className="hidden md:inline-flex items-center gap-1">
+            ⚡ Powered by Bhashini AI Engine
+          </span>
         </div>
       </div>
     </div>

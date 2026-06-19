@@ -41,15 +41,15 @@ const AnalyticsPanel = ({
   ];
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[450px] z-50 flex shadow-2xl animate-slide-in">
+    <div className="fixed inset-0 z-50 flex justify-end overflow-hidden">
       {/* Backdrop overlay */}
       <div 
-        className="fixed inset-0 bg-slate-900/30 dark:bg-slate-950/60 backdrop-blur-sm -z-10" 
+        className="fixed inset-0 bg-slate-900/30 dark:bg-slate-950/60 backdrop-blur-sm animate-fade-in" 
         onClick={onClose}
       />
       
       {/* Panel */}
-      <div className="w-full h-full flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-800/50 text-slate-900 dark:text-slate-100">
+      <div className="relative w-full sm:w-[450px] h-full flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-800/50 text-slate-900 dark:text-slate-100 shadow-2xl animate-slide-in">
         {/* Header */}
         <div className="p-5 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-2">

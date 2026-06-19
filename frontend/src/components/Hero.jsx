@@ -39,8 +39,8 @@ const Hero = ({ onGetStarted }) => {
         </div>
 
         {/* Floating Feature Grid */}
-        <div id="features" className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
-          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+        <div id="features" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
+          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center hover:scale-[1.03] hover:border-indigo-500/40 dark:hover:border-indigo-500/30 hover:shadow-lg active:scale-[0.99] transition-all duration-300 cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -48,7 +48,7 @@ const Hero = ({ onGetStarted }) => {
             <p className="text-xs text-slate-500 dark:text-slate-400">Instant source language detection via langdetect.</p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center hover:scale-[1.03] hover:border-emerald-500/40 dark:hover:border-emerald-500/30 hover:shadow-lg active:scale-[0.99] transition-all duration-300 cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
               <Mic className="w-5 h-5" />
             </div>
@@ -56,7 +56,7 @@ const Hero = ({ onGetStarted }) => {
             <p className="text-xs text-slate-500 dark:text-slate-400">Hands-free text-to-speech with browser recognition.</p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center hover:scale-[1.03] hover:border-rose-500/40 dark:hover:border-rose-500/30 hover:shadow-lg active:scale-[0.99] transition-all duration-300 cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
               <FileDown className="w-5 h-5" />
             </div>
@@ -64,7 +64,7 @@ const Hero = ({ onGetStarted }) => {
             <p className="text-xs text-slate-500 dark:text-slate-400">Download formatted translation summaries generated via ReportLab.</p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center">
+          <div className="glass-card p-6 rounded-2xl text-center flex flex-col items-center hover:scale-[1.03] hover:border-amber-500/40 dark:hover:border-amber-500/30 hover:shadow-lg active:scale-[0.99] transition-all duration-300 cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
               <Shield className="w-5 h-5" />
             </div>
