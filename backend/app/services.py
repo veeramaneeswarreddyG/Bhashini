@@ -164,34 +164,117 @@ class TranslateService:
             except Exception as e:
                 print(f"Failed to connect to Google Translation API: {e}")
 
-        # Fallback to LibreTranslate API
+        # Fallback 1: Google Translate Web API (free, no API key needed, extremely reliable)
         try:
-            async with httpx.AsyncClient() as client:
-                url = f"{libre_url.rstrip('/')}/translate"
-                payload = {
-                    "q": text,
-                    "source": source_lang,
-                    "target": target,
-                    "format": "text"
+            async with httpx.AsyncClient(verify=False) as client:
+                url = "https://translate.googleapis.com/translate_a/single"
+                params = {
+                    "client": "gtx",
+                    "sl": source_lang if source_lang else "auto",
+                    "tl": target,
+                    "dt": "t",
+                    "q": text
                 }
-                response = await client.post(url, json=payload, timeout=10.0)
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+                response = await client.get(url, params=params, headers=headers, timeout=10.0)
                 if response.status_code == 200:
                     data = response.json()
+                    translated_text = "".join(segment[0] for segment in data[0] if segment and segment[0])
+                    
+                    web_detected_lang = source_lang
+                    if (source == "auto" or not source) and len(data) > 2 and data[2]:
+                        web_detected_lang = data[2]
+                        
                     return {
-                        "translatedText": data["translatedText"],
-                        "detectedLanguage": detected_lang or source_lang,
-                        "provider": "libretranslate"
+                        "translatedText": translated_text,
+                        "detectedLanguage": web_detected_lang or source_lang,
+                        "provider": "google-web"
                     }
                 else:
-                    raise HTTPException(
-                        status_code=response.status_code, 
-                        detail=f"LibreTranslate API returned error: {response.text}"
-                    )
-        except httpx.RequestError as e:
-            raise HTTPException(
-                status_code=503, 
-                detail=f"Translation API connection failed: {str(e)}"
-            )
+                    print(f"Google Web Translate returned status {response.status_code}: {response.text}")
+        except Exception as e:
+            print(f"Google Web Translate failed: {e}")
+
+        # Fallback 2: MyMemory Translation API (free, no API key needed)
+        try:
+            async with httpx.AsyncClient(verify=False) as client:
+                url = "https://api.mymemory.translated.net/get"
+                langpair = f"{source_lang}|{target}" if source_lang else f"auto|{target}"
+                params = {
+                    "q": text,
+                    "langpair": langpair
+                }
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                }
+                response = await client.get(url, params=params, headers=headers, timeout=10.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("responseStatus") == 200:
+                        translated_text = data["responseData"]["translatedText"]
+                        return {
+                            "translatedText": translated_text,
+                            "detectedLanguage": source_lang,
+                            "provider": "mymemory"
+                        }
+                    else:
+                        print(f"MyMemory API returned status {data.get('responseStatus')}: {data.get('responseDetails')}")
+                else:
+                    print(f"MyMemory API returned HTTP status {response.status_code}")
+        except Exception as e:
+            print(f"MyMemory API failed: {e}")
+
+        # Fallback 3: LibreTranslate API (with multiple community mirrors for maximum resilience, using verify=False)
+        primary_libre_url = os.getenv("LIBRETRANSLATE_URL", "https://translate.terraprint.co")
+        libre_urls = [primary_libre_url]
+        
+        # Backup mirrors in case the primary is offline or DNS fails
+        backup_mirrors = [
+            "https://trans.zillyhuhn.com",
+            "https://translate.foxhaven.cyou",
+            "https://translate.argosopentech.com"
+        ]
+        for backup in backup_mirrors:
+            if backup not in libre_urls:
+                libre_urls.append(backup)
+
+        last_error = None
+        for base_url in libre_urls:
+            try:
+                async with httpx.AsyncClient(verify=False) as client:
+                    url = f"{base_url.rstrip('/')}/translate"
+                    payload = {
+                        "q": text,
+                        "source": source_lang,
+                        "target": target,
+                        "format": "text"
+                    }
+                    headers = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                        "Accept": "application/json"
+                    }
+                    response = await client.post(url, json=payload, headers=headers, timeout=10.0)
+                    if response.status_code == 200:
+                        data = response.json()
+                        provider_label = f"libretranslate ({base_url.split('//')[1].split('/')[0]})"
+                        return {
+                            "translatedText": data["translatedText"],
+                            "detectedLanguage": detected_lang or source_lang,
+                            "provider": provider_label
+                        }
+                    else:
+                        print(f"LibreTranslate mirror {base_url} returned status {response.status_code}: {response.text}")
+                        last_error = f"Status {response.status_code} from {base_url}"
+            except Exception as e:
+                print(f"LibreTranslate mirror {base_url} failed: {e}")
+                last_error = str(e)
+
+        raise HTTPException(
+            status_code=503, 
+            detail=f"All translation mirrors failed. Last error: {last_error}"
+        )
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
