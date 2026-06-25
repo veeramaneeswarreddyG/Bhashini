@@ -53,7 +53,7 @@ ttc_fonts = [
 for name, path in ttc_fonts:
     if os.path.exists(path):
         try:
-            pdfmetrics.registerFont(TTFont(name, path, index=0))
+            pdfmetrics.registerFont(TTFont(name, path, subfontIndex=0))
             registered_fonts[name] = True
             print(f"Registered Windows collection font: {name}")
         except Exception as e:
@@ -63,6 +63,34 @@ for name, path in ttc_fonts:
                 print(f"Registered Windows collection font (fallback): {name}")
             except Exception as e2:
                 print(f"Failed to register TTC font {name} from {path}: {e2}")
+# Try to register local project fonts (specifically for Telugu/Indic language support)
+base_dir = os.path.dirname(os.path.abspath(__file__))
+local_fonts = [
+    ("Pothana", os.path.join(base_dir, "fonts", "pothana-2000.ttf")),
+    ("Suguna", os.path.join(base_dir, "fonts", "suguna.ttf")),
+    ("Chathura", os.path.join(base_dir, "fonts", "Chathura_Light.ttf")),
+    ("ChathuraBold", os.path.join(base_dir, "fonts", "chathura-bold.ttf")),
+    
+    # Anek Font Family
+    ("AnekBangla", os.path.join(base_dir, "fonts", "AnekBangla.ttf")),
+    ("AnekDevanagari", os.path.join(base_dir, "fonts", "AnekDevanagari.ttf")),
+    ("AnekGujarati", os.path.join(base_dir, "fonts", "AnekGujarati.ttf")),
+    ("AnekGurmukhi", os.path.join(base_dir, "fonts", "AnekGurmukhi.ttf")),
+    ("AnekKannada", os.path.join(base_dir, "fonts", "AnekKannada.ttf")),
+    ("AnekMalayalam", os.path.join(base_dir, "fonts", "AnekMalayalam.ttf")),
+    ("AnekOdia", os.path.join(base_dir, "fonts", "AnekOdia.ttf")),
+    ("AnekTamil", os.path.join(base_dir, "fonts", "AnekTamil.ttf")),
+    ("AnekTelugu", os.path.join(base_dir, "fonts", "AnekTelugu.ttf")),
+]
+
+for name, path in local_fonts:
+    if os.path.exists(path):
+        try:
+            pdfmetrics.registerFont(TTFont(name, path))
+            registered_fonts[name] = True
+            print(f"Registered local font: {name}")
+        except Exception as e:
+            print(f"Failed to register local font {name} from {path}: {e}")
 
 def get_font_for_lang(lang_code: str) -> str:
     """Helper to return the best registered font for a specific language code."""
@@ -71,13 +99,55 @@ def get_font_for_lang(lang_code: str) -> str:
         
     lang = lang_code.split("-")[0].lower()
     
-    # South Asian / Indic languages (Hindi, Telugu, Tamil, Kannada, Malayalam, mr, gu, bn, pa)
+    # Telugu -> AnekTelugu
+    if lang == "te":
+        if "AnekTelugu" in registered_fonts:
+            return "AnekTelugu"
+        elif "Pothana" in registered_fonts:
+            return "Pothana"
+            
+    # Tamil -> AnekTamil
+    elif lang == "ta":
+        if "AnekTamil" in registered_fonts:
+            return "AnekTamil"
+            
+    # Kannada -> AnekKannada
+    elif lang == "kn":
+        if "AnekKannada" in registered_fonts:
+            return "AnekKannada"
+            
+    # Malayalam -> AnekMalayalam
+    elif lang == "ml":
+        if "AnekMalayalam" in registered_fonts:
+            return "AnekMalayalam"
+            
+    # Devanagari (Hindi, Marathi) -> AnekDevanagari
+    elif lang in ["hi", "mr"]:
+        if "AnekDevanagari" in registered_fonts:
+            return "AnekDevanagari"
+            
+    # Bengali -> AnekBangla
+    elif lang == "bn":
+        if "AnekBangla" in registered_fonts:
+            return "AnekBangla"
+            
+    # Gujarati -> AnekGujarati
+    elif lang == "gu":
+        if "AnekGujarati" in registered_fonts:
+            return "AnekGujarati"
+            
+    # Punjabi (Gurmukhi) -> AnekGurmukhi
+    elif lang == "pa":
+        if "AnekGurmukhi" in registered_fonts:
+            return "AnekGurmukhi"
+            
+    # Fallback to Nirmala for other South Asian / Indic languages
     if lang in ["hi", "te", "ta", "kn", "ml", "mr", "gu", "bn", "pa"]:
         if "Nirmala" in registered_fonts:
             return "Nirmala"
             
     # Chinese
-    elif lang == "zh":
+    if lang == "zh":
         if "Microsoft YaHei" in registered_fonts:
             return "Microsoft YaHei"
             
