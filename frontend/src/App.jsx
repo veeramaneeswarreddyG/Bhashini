@@ -9,7 +9,10 @@ import { useTheme } from './context/ThemeContext';
 import axios from 'axios';
 import { Languages, Terminal, BarChart3, History, Cpu } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8000'
+    : '/_/backend');
 
 const App = () => {
   const { isDark, toggleTheme } = useTheme();
